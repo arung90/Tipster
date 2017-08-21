@@ -4,11 +4,14 @@ class SettingsViewController : UIViewController, UITextFieldDelegate, UIPickerVi
     
     let tapGestureRecognizer = UITapGestureRecognizer()
     let defaults = UserDefaults.standard
-
+    
     @IBOutlet weak var defaultTipSegmentControl: UISegmentedControl!
     
     @IBOutlet weak var customTextField: UITextField!
     @IBOutlet weak var customTipPicker: UIPickerView!
+    @IBOutlet weak var darkThemeSwitch: UISwitch!
+
+    
     var tipPercentage = [15, 20, 25]
     let customTipArray = Array(stride(from: 30, through: 100, by: 5))
     
@@ -23,6 +26,7 @@ class SettingsViewController : UIViewController, UITextFieldDelegate, UIPickerVi
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        DataManager.setThemeColors(self, isDarkTheme: DataManager.isDarkThemeEnabled())
         setDefaultTip()
     }
     
@@ -34,6 +38,7 @@ class SettingsViewController : UIViewController, UITextFieldDelegate, UIPickerVi
         customTextField.placeholder = PlaceHolder.CustomTip.rawValue
         customTextField.isHidden = true
         customTipPicker.isHidden = true
+        darkThemeSwitch.isOn = DataManager.isDarkThemeEnabled()
     }
     
     func isDefaultTipSet() -> Bool {
@@ -62,12 +67,18 @@ class SettingsViewController : UIViewController, UITextFieldDelegate, UIPickerVi
         } else if isDefaultTipSet(), let segmentIndex = tipSegmentIndex()  {
             defaultTipSegmentControl.selectedSegmentIndex = segmentIndex
         } else {
-           defaultTipSegmentControl.selectedSegmentIndex = 0
+            defaultTipSegmentControl.selectedSegmentIndex = 0
         }
     }
     
     @IBAction func userDidSelectDefaultTip(_ sender: UISegmentedControl) {
         userDidSelectDefaultTip(selectedIndex: sender.selectedSegmentIndex)
+    }
+    
+    @IBAction func userDidSwitchToDarkTheme(_ sender: UISwitch) {
+        DataManager.setDarkThemeEnabled(sender.isOn)
+        DataManager.setThemeColors(self, isDarkTheme: sender.isOn)
+        customTipPicker.reloadAllComponents()
     }
     
     func userDidSelectDefaultTip(selectedIndex: Int) {
@@ -108,16 +119,18 @@ class SettingsViewController : UIViewController, UITextFieldDelegate, UIPickerVi
         return customTipArray.count
     }
     
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return String(customTipArray[row])
-    }
-    
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         defaults.set(false, forKey: Constant.hasDefaultTip.rawValue)
         defaults.set(true, forKey: Constant.hasCustomTip.rawValue)
         defaults.set(customTipArray[row], forKey: Constant.defaultTip.rawValue)
         defaults.synchronize()
         customTextField.text = String(customTipArray[row]) + "%"
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+        let title = String(customTipArray[row])
+        let attributedTitle = NSAttributedString(string: title, attributes: [NSForegroundColorAttributeName: DataManager.pickerTitleColor(forTheme: DataManager.isDarkThemeEnabled())])
+        return attributedTitle
     }
     
     override func didReceiveMemoryWarning() {

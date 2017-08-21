@@ -1,14 +1,19 @@
 import UIKit
 
 enum PlaceHolder : String {
-    case Amount = "$"
     case Tip = "Tip"
     case Total = "Total"
     case CustomTip = "Custom Tip"
 }
 
-class ViewController: UIViewController, UITextFieldDelegate {
+//FIXME: DARK THEME
+//FIXME: SETTINGS ICON
+//FIXME: LAUNCH SCREEN
+//FIXME: APP ICON
+//FIXME: SERVICES
 
+class ViewController: UIViewController, UITextFieldDelegate {
+    
     @IBOutlet weak var amountTextField: UITextField!
     @IBOutlet weak var tipAmountTextField: UITextField!
     @IBOutlet weak var totalAmountTextField: UITextField!
@@ -31,6 +36,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        DataManager.setThemeColors(self, isDarkTheme: DataManager.isDarkThemeEnabled())
+        
         if isAppInUse {
             amountTextField.text = DataManager.getLastAmount() > 0 ? String(DataManager.getLastAmount()) : ""
         } else {
@@ -51,7 +58,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     func setUpView() {
         amountTextField.becomeFirstResponder()
-        amountTextField.placeholder = PlaceHolder.Amount.rawValue
+        amountTextField.placeholder = DataManager.localeCurrencySymbol()
         tipAmountTextField.placeholder = PlaceHolder.Tip.rawValue
         totalAmountTextField.placeholder = PlaceHolder.Total.rawValue
         
@@ -127,7 +134,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-
+    
+    
 }
-

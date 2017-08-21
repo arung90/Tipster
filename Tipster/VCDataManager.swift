@@ -3,7 +3,7 @@ import Foundation
 class VCDataManager {
     
     func stringForTipAmount(_ tipAmount: Double, totalAmount: Double) -> (tipAmountString: String, totalAmountString: String)  {
-        return (String(format: "$%.2f", tipAmount), String(format: "$%.2f", totalAmount))
+        return (String(format: "\(DataManager.localeCurrencySymbol())%.2f", tipAmount), String(format: "\(DataManager.localeCurrencySymbol())%.2f", totalAmount))
     }
     
     func calculateTotalForAmount(_ amount: Double, tipAmount: Double) -> Double {
