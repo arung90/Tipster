@@ -37,16 +37,17 @@ As part of your pre-work submission, please reflect on the app and answer the fo
 
 **Question 1**: "What are your reactions to the iOS app development platform so far? How would you describe outlets and actions to another developer? Bonus: any idea how they are being implemented under the hood? (It might give you some ideas if you right-click on the Storyboard and click Open As->Source Code")
 
-**Answer:** [Enter your answer here in a paragraph or two].
+**Answer:** IBAction and IBOutlet are macros defined to denote variables and methods that can be referred to in Interface Builder. IBAction resolves to void and IBOutlet resolves to nothing, but they signify to Xcode and Interface builder that these variables and methods can be used in Interface builder to link UI elements to your code. Under the hood it is implemented as **XML**
+
 
 Question 2: "Swift uses [Automatic Reference Counting](https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/AutomaticReferenceCounting.html#//apple_ref/doc/uid/TP40014097-CH20-ID49) (ARC), which is not a garbage collector, to manage memory. Can you explain how you can get a strong reference cycle for closures? (There's a section explaining this concept in the link, how would you summarize as simply as possible?)"
 
-**Answer:** [Enter your answer here in a paragraph or two].
+**Answer:** If a property of a class has a strong reference to a closure while the closure strongly captures *self* within its body, will result in a strong reference cycle. Even when the class reference is set to nil, the closure still holds *self* thereby both are not deallocated. Using a **Capture list** is one way of avoiding this issue. 
 
 
 ## License
 
-    Copyright [2017] [name of copyright owner]
+    Copyright [2017] [Arun Gopinathan]
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
